@@ -19,12 +19,12 @@ public class Rol {
     @Column(name = "Nombre_rol")
     private String nombre;
 
-    @Column(name = "Tipo_dano")
-    private String dano;
+    @Column(name = "Tipo_daño")
+    private String danyo;
 
-    public Rol(String nombre, String dano) {
+    public Rol(String nombre, String danyo) {
         this.nombre = nombre;
-        this.dano = dano;
+        this.danyo = danyo;
     }
     
     public Rol() {

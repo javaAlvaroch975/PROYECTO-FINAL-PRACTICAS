@@ -29,6 +29,20 @@ static void imprimirrol(){
     System.out.println("Luchador");
     System.out.println("Soporte");
 }
+
+static void actualizarcampo_us(){
+    System.out.println("1 Nombre");
+    System.out.println("2 Clan");
+    System.out.println("3 Rol");
+    System.out.println("4 Todos los campos");
+}
+
+static void actualizarcampo_rol(){
+    System.out.println("1 Nombre");
+    System.out.println("2 Tipo de daño");
+    System.out.println("3 Todos los campos");
+}
+
     public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
     UsuarioDAO  usuDAO = new UsuarioDAO();
@@ -36,57 +50,211 @@ static void imprimirrol(){
     Usuario usu = new Usuario();
     Rol ro = new Rol();
 
-    imprimirmenu();    
-    int opc = sc.nextInt();
-    String nombre;
+    int opc;
+    int id;
+    String nombre_us;
+    String nombre_rol;
     String clan;
     String rol;
+    String tipo_danyo;
+    Session session = null;
+    Transaction tx = null;
+
+        do {
+            imprimirmenu();    
+             opc = sc.nextInt();
     
-    do {
-        switch (opc) {
-            case 0:
-            System.out.println("Adios");
-                sc.close();
-                break;
-            
-            case 1:
-            System.out.println("Dime un nombre");
-            nombre = sc.next();
-            System.out.println();
+             try{
+                session = HibernateUtil.getSessionFactory().openSession();
+                tx = session.beginTransaction();
 
-            System.out.println("Dime a que clan perteneces");
-            clan = sc.next();
-            System.out.println();
-
-            imprimirrol();
-            rol = sc.next();
-            
-            Session session = HibernateUtil.getSessionFactory().openSession();
-T           ransaction tx = session.beginTransaction();
-
-
-            usu = new Usuario(nombre, clan, rol);
-            UsuarioDAO.insertUsuario(session, usu);
-
-            tx.commit();
-            session.close();
-                break;
-
+            switch (opc) {
+                case 0:
+                System.out.println("Adios");
+                    sc.close();
+                    break;
                 
-            case 2:
-                System.out.println("Dime cual es tu rol");
-                sc.close();
-                break;
+                case 1:
+    
+                System.out.println("Dime un nombre");
+                nombre_us = sc.next();
+                System.out.println();
+    
+                System.out.println("Dime a que clan perteneces");
+                clan = sc.next();
+                System.out.println();
+    
+                imprimirrol();
+                System.out.println("Dime que rol quieres");
+                rol = sc.next();
+    
+                usu = new Usuario(nombre_us, clan, rol);
+                usuDAO.insertUsuario(session, usu);
+    
+                    break;
+                    
+                case 2:
+    
+                    System.out.println("Dime cual es tu id");
+                    id = sc.nextInt();
+                    Usuario uact = usuDAO.selectUsuarioBYID(session, id);
+                    
+                    sc.nextLine(); 
+
+                    actualizarcampo_us();
+                    int opcu2 = sc.nextInt();
+                    switch (opcu2) {
+                        case 1:
+                        System.out.println("Dime tu nuevo nombre");
+                            nombre_us = sc.next();
+                            uact.setNombre(nombre_us);
+                            usuDAO.updateUsuario(session, uact);
+    
+                            break;
+    
+                        case 2:
+                        System.out.println("Dime tu nuevo clan");
+                            clan = sc.next();
+                            uact.setClan(clan);
+                            usuDAO.updateUsuario(session, uact);
+
+                            break;
+    
+                        case 3:
+                        System.out.println("Dime tu nuevo rol");
+                            rol = sc.next();
+                            uact.setRol(rol);
+                            usuDAO.updateUsuario(session, uact);
+
+                            break;   
+                            
+                        case 4:
+                        System.out.println("Dime tu nuevo nombre");
+                            nombre_us = sc.next();
+
+                        System.out.println("Dime tu nuevo clan");
+                            clan = sc.next();
+
+                            System.out.println();
+                            imprimirrol();
+                            
+                        System.out.println("Dime tu nuevo rol");
+                            rol = sc.next();
         
+                            uact.setNombre(nombre_us);
+                            uact.setClan(clan);
+                            uact.setRol(rol);
+
+                            usuDAO.updateUsuario(session, uact);
+
+                            break;  
+                            
+                        default:
+                        System.out.println("Elige una opcion valida");
+                            break;
+                    }
+                    System.out.println();
+                    break;
+            
+
+            case 3:
+                System.out.println("Dime cual es tu id");
+                id = sc.nextInt();
+                Usuario udel = usuDAO.selectUsuarioBYID(session, id);
+            
+                usuDAO.deleteUsuario(session, udel);
+                System.out.println();
+
+                break;
+            
+            case 4:
+                    System.out.println("Dime el nombre del nuevo rol");
+                    nombre_rol = sc.next();
+                    System.out.println();
+
+                    System.out.println("Dime el tipo de daño del rol");
+                    tipo_danyo = sc.next();
+                    System.out.println();
+
+                    ro = new Rol(nombre_rol, tipo_danyo);
+                    roDAO.insertRol(session, ro);
+
+                break;
+
+            case 5:
+            System.out.println("Dime cual es tu id");
+            id = sc.nextInt();
+            Rol roact = roDAO.selectRolBYID(session, id);
+            
+            sc.nextLine(); 
+
+            actualizarcampo_rol();
+            int opcr2 = sc.nextInt();
+            switch (opcr2) {
+                case 1:
+                System.out.println("Dime tu nuevo nombre");
+                    nombre_rol = sc.next();
+                    roact.setNombre(nombre_rol);
+                    roDAO.updateRol(session, roact);
+
+                    break;
+
+                case 2:
+                System.out.println("Dime el nuevo tipo de daño");
+                    tipo_danyo = sc.next();
+                    roact.setDanyo(tipo_danyo);
+                    roDAO.updateRol(session, roact);
+
+                    break;            
+                    
+                case 3:
+                System.out.println("Dime tu nuevo nombre");
+                    nombre_rol = sc.next();
+
+                    System.out.println("Dime el nuevo tipo de daño");
+                    tipo_danyo = sc.next();
+
+                    roact.setNombre(nombre_rol);
+                    roact.setDanyo(tipo_danyo);
+
+                    roDAO.updateRol(session, roact);
+
+                    break;  
+                    
+                default:
+                System.out.println("Elige una opcion valida");
+                    break;
+            }
+            System.out.println();
+            break;
+    
+            case 6:
+            System.out.println("Dime cual es el id");
+            id = sc.nextInt();
+            Rol robor = roDAO.selectRolBYID(session, id);
+        
+            roDAO.deleteRol(session, robor);
+            System.out.println();
+
+            break;
+
+
             default:
             System.out.println("Elige una opcion valida");
                 break;
-        }
-        
+            }
 
-    }while (opc != 0);
-    
-    
+            
+            tx.commit();
+            session.clear();
+        }catch (Exception e){
+            if (tx != null)
+            tx.rollback();
+            e.printStackTrace();
+        }finally{
+            session.close();
+        }
+        }while (opc != 0);
 
     }
 }
