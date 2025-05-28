@@ -1,4 +1,5 @@
 package com.juego;
+import java.util.List;
 import java.util.Scanner;
 import com.util.HibernateUtil;
 import com.model.*;
@@ -18,6 +19,8 @@ public class Main {
     System.out.println("6 Borrar Rol");
     System.out.println("7 Ver usuarios");
     System.out.println("8 Ver roles");
+    System.out.println("9 Asociar Usuario a rol");
+    System.out.println("10 Desaciociar rol a Usuario");
     System.out.println("0 Salir");
 }
 
@@ -88,7 +91,7 @@ static void actualizarcampo_rol(){
                 System.out.println("Dime que rol quieres");
                 rol = sc.next();
     
-                usu = new Usuario(nombre_us, clan, rol);
+                usu = new Usuario(nombre_us, clan);
                 usuDAO.insertUsuario(session, usu);
     
                     break;
@@ -123,7 +126,6 @@ static void actualizarcampo_rol(){
                         case 3:
                         System.out.println("Dime tu nuevo rol");
                             rol = sc.next();
-                            uact.setRol(rol);
                             usuDAO.updateUsuario(session, uact);
 
                             break;   
@@ -143,7 +145,6 @@ static void actualizarcampo_rol(){
         
                             uact.setNombre(nombre_us);
                             uact.setClan(clan);
-                            uact.setRol(rol);
 
                             usuDAO.updateUsuario(session, uact);
 
@@ -238,6 +239,32 @@ static void actualizarcampo_rol(){
 
             break;
 
+            case 7:
+            List<Usuario> listaUsuarios = usuDAO.sellectAllUsuarios(session);
+    
+            System.out.println("Lista de usuarios:");
+            for (Usuario u : listaUsuarios) {
+                System.out.println("ID: " + u.getID_Usuario());
+                System.out.println("Nombre: " + u.getNombre());
+                System.out.println("Clan: " + u.getClan());
+                System.out.println(" ");
+            }
+        
+
+            break;
+
+            case 8:
+            List<Rol> listaRoles = roDAO.selectAllRoles(session);
+
+            System.out.println("Lista de roles:");
+            for (Rol r : listaRoles) {
+                System.out.println("ID: " + r.getID_rol());
+                System.out.println("Nombre: " + r.getNombre());
+                System.out.println("Tipo de daño: " + r.getDanyo());
+                System.out.println("---------------");
+            }
+            
+            break;
 
             default:
             System.out.println("Elige una opcion valida");
@@ -249,6 +276,7 @@ static void actualizarcampo_rol(){
             session.clear();
         }catch (Exception e){
             if (tx != null)
+            
             tx.rollback();
             e.printStackTrace();
         }finally{

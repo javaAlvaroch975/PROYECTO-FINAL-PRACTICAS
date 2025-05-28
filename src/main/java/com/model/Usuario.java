@@ -21,13 +21,10 @@ public class Usuario {
     @Column(name = "Clan")
     private String clan;
 
-    @Column(name = "Rol")
-    private String rol;
 
-    public Usuario(String nombre, String clan, String rol) {
+    public Usuario(String nombre, String clan) {
         this.nombre = nombre;
         this.clan = clan;
-        this.rol = rol;
     }
     
     public Usuario() {
