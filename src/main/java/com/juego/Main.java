@@ -2,7 +2,8 @@ package com.juego;
 import java.util.List;
 import java.util.Scanner;
 import com.util.HibernateUtil;
-import com.model.*;
+import com.model.Usuario;
+import com.model.Rol;
 import com.dao.RolDAO;
 import com.dao.UsuarioDAO;
 import org.hibernate.Session;
@@ -20,7 +21,8 @@ public class Main {
     System.out.println("7 Ver usuarios");
     System.out.println("8 Ver roles");
     System.out.println("9 Asociar Usuario a rol");
-    System.out.println("10 Desaciociar rol a Usuario");
+    System.out.println("10 Desaciociar Rol a Usuario");
+    System.out.println("11 Ver asociaciones Rol - Ususario");
     System.out.println("0 Salir");
 }
 
@@ -265,6 +267,68 @@ static void actualizarcampo_rol(){
             }
             
             break;
+
+            case 9:
+            System.out.println("Dime el id de tu usuario");
+            int id_usuC = sc.nextInt();
+            Usuario uC = usuDAO.selectUsuarioBYID(session, id_usuC);
+
+            System.out.println("Dime el id de tu rol");
+            int id_rolC = sc.nextInt();
+            Rol rC = roDAO.selectRolBYID(session, id_rolC);
+
+            if (uC != null && rC != null) {
+                uC.añadirRol(rC);
+                usuDAO.updateUsuario(session, uC);
+                System.out.println("Rol añadido correctamente al usuario.");
+            } else {
+            System.out.println("Usuario o rol no encontrado.");
+                }
+
+            break;
+
+            case 10:
+            int id_usuR;
+            System.out.println("Dime el id de tu usuario");
+            id_usuR = sc.nextInt();
+            Usuario uR = usuDAO.selectUsuarioBYID(session, id_usuR);
+
+            int id_rolR;
+            System.out.println("Dime el id de tu rol");
+            id_rolR = sc.nextInt();
+            Rol rR = roDAO.selectRolBYID(session, id_rolR);
+
+            if (uR != null && rR != null) {
+                uR.quitarRol(rR);
+                usuDAO.updateUsuario(session, uR);
+                System.out.println("Rol eliminado correctamente del usuario.");
+            } else {
+                System.out.println("Usuario o rol no encontrado.");
+            }
+
+            break;
+
+            case 11:
+    System.out.println("Asociaciones Usuario - Rol:");
+
+    List<Usuario> usuarios = usuDAO.sellectAllUsuarios(session); 
+
+    for (Usuario usuario : usuarios) {
+        System.out.println("Usuario: " + usuario.getNombre());
+
+        if (usuario.getRoles().isEmpty()) {
+            System.out.println(" - No tiene roles asignados");
+        } else {
+            for (Rol roll : usuario.getRoles()) {
+                System.out.println(" - Rol: " + roll.getNombre() + " | Tipo de daño: " + roll.getDanyo());
+            }
+        }
+
+        System.out.println(); 
+    }
+
+    break;
+
 
             default:
             System.out.println("Elige una opcion valida");

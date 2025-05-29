@@ -52,6 +52,12 @@
     <scope>provided</scope>
 </dependency>
 
+
+  <dependency>
+    <groupId>com.microsoft.azure</groupId>
+    <artifactId>azure-svc-mgmt</artifactId>
+    <version>0.9.8</version>
+  </dependency>
 </dependencies>
 
 </project>
